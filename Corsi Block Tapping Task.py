@@ -54,6 +54,7 @@ class Block:
         self._blink = False
         self._clicked = False
         self._block_time = None
+        self._click_time = None
 
     def is_cursor_over(self, mouse):
         mouse_x = mouse[0]
@@ -66,12 +67,16 @@ class Block:
 
     def click(self):
         self._clicked = True
+        self._click_time = time()
 
     def unclick(self):
         self._clicked = False
 
     def is_clicked(self):
         return self._clicked
+
+    def get_click_time(self):
+        return self._click_time
 
     def set_block_time(self, time):
         self._block_time = time
@@ -165,38 +170,47 @@ def main():
                 if (blockList[0].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[0].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(1)  #appends the number for this block to the empty response list so it can be compared with the trial list.
                 elif (blockList[1].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[1].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(2)
                 elif (blockList[2].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[2].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(3)
                 elif (blockList[3].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[3].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(4)
                 elif (blockList[4].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[4].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(5)
                 elif (blockList[5].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[5].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(6)
                 elif (blockList[6].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[6].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(7)
                 elif (blockList[7].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[7].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(8)
                 elif (blockList[8].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
                         blockList[8].click()
+                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
                         UserInput.append(9)
                 if event.type ==  KEYDOWN and event.key == K_SPACE:
                     this_correctness = (CorrectBlocks == UserInput)
@@ -342,23 +356,23 @@ def main():
                 if time() - blockList[8].get_block_time() > 0.01:
                     GameState = "wait_for_response"
         #Unclicking of the blocks after 0.2 seconds (changed to 3)
-        elif blockList[0].is_clicked() and time()- blockList[0].get_block_time() > 3:
+        elif blockList[0].is_clicked() and time()- blockList[0].get_click_time() > 0.2:
                 blockList[0].unclick()
-        elif blockList[1].is_clicked() and time()- blockList[1].get_block_time() > 3:
+        elif blockList[1].is_clicked() and time()- blockList[1].get_click_time() > 0.2:
                 blockList[1].unclick()
-        elif blockList[2].is_clicked() and time()- blockList[2].get_block_time() > 3:
+        elif blockList[2].is_clicked() and time()- blockList[2].get_click_time() > 0.2:
                 blockList[2].unclick()
-        elif blockList[3].is_clicked() and time()- blockList[3].get_block_time() > 3:
+        elif blockList[3].is_clicked() and time()- blockList[3].get_click_time() > 0.2:
                 blockList[3].unclick()
-        elif blockList[4].is_clicked() and time()- blockList[4].get_block_time() > 3:
+        elif blockList[4].is_clicked() and time()- blockList[4].get_click_time() > 0.2:
                  blockList[4].unclick()
-        elif blockList[5].is_clicked() and time()- blockList[5].get_block_time() > 3:
+        elif blockList[5].is_clicked() and time()- blockList[5].get_click_time() > 0.2:
                 blockList[5].unclick()
-        elif blockList[6].is_clicked() and time()- blockList[6].get_block_time() > 3:
+        elif blockList[6].is_clicked() and time()- blockList[6].get_click_time() > 0.2:
                 blockList[6].unclick()
-        elif blockList[7].is_clicked() and time()- blockList[7].get_block_time() > 3:
+        elif blockList[7].is_clicked() and time()- blockList[7].get_click_time() > 0.2:
                 blockList[7].unclick()
-        elif blockList[8].is_clicked() and time()- blockList[8].get_block_time() > 3:
+        elif blockList[8].is_clicked() and time()- blockList[8].get_click_time() > 0.2:
                 blockList[8].unclick()
                 
         elif GameState == "feedback":
@@ -507,6 +521,7 @@ def drawGoodbyeText(score):
     text_rectangle = text_surface.get_rect()
     text_rectangle.center = (screenSize[0] / 2.0, screenSize[1] / 3.0)
     screen.blit(text_surface, text_rectangle)
+
 
 def blockGeneration(sequence_length, blocks):
 
