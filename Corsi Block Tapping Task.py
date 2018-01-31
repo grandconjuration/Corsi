@@ -132,26 +132,8 @@ screen = pygame.display.get_surface()
 screen.fill(backgroundColour)
 
 def main():
-    #Booleans for passing to the draw function whether a block needs to 'blink'
-    # blink_1 = False
-    # blink_2 = False
-    # blink_3 = False
-    # blink_4 = False
-    # blink_5 = False
-    # blink_6 = False
-    # blink_7 = False
-    # blink_8 = False
-    # blink_9 = False
+
     on_spot = False
-    # on_spot_1 = False
-    # on_spot_2 = False
-    # on_spot_3 = False
-    # on_spot_4 = False
-    # on_spot_5 = False
-    # on_spot_6 = False
-    # on_spot_7 = False
-    # on_spot_8 = False
-    # on_spot_9 = False
     a_range = range(5, (screenSize[0] - 80), 80)    #sets the range for the coordinates; always 5 pixels from edge of screen and 5 pixels between blocks.
     b_range = range(5, (screenSize[1] - 80), 40)    #sets the range for the coordinates; always 5 pixels from edge of screen and 5 pixels between blocks.
     blocks = range(1,10)
@@ -525,21 +507,6 @@ def drawGoodbyeText(score):
     text_rectangle = text_surface.get_rect()
     text_rectangle.center = (screenSize[0] / 2.0, screenSize[1] / 3.0)
     screen.blit(text_surface, text_rectangle)
-
-
-# def pick_coordinates_x(a):
-#
-#     random_number = random.choice(a)
-#     a.remove(random_number)
-#     return random_number
-#
-#
-# def pick_coordinates_y(b):
-#
-#     random_number_1 = random.choice(b)
-#     b.remove(random_number_1)
-#     return random_number_1
- 
 
 def blockGeneration(sequence_length, blocks):
 
