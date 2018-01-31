@@ -44,14 +44,46 @@ class BlockGenerator:
 class Block:
     'Representation of a block in the game'
 
-    def __init__(self, x, y, blockNr):
+    def __init__(self, x, y, block_nr):
         # Block sizes; width and heigth, you can change them here
         self._width = 75
         self._height = 75
         self._x = x
         self._y = y
-        self._blockNr = blockNr
+        self._block_nr = block_nr
         self._blink = False
+        self._clicked = False
+        self._block_time = None
+
+    def is_cursor_over(self, mouse):
+        mouse_x = mouse[0]
+        mouse_y = mouse[1]
+        if (self._x + self.get_width() > mouse_x > self.get_x() and self.get_y() +
+                self.get_height() > mouse_y > self.get_y()):
+            return True
+        else:
+            return False
+
+    def click(self):
+        self._clicked = True
+
+    def unclick(self):
+        self._clicked = False
+
+    def is_clicked(self):
+        return self._clicked
+
+    def set_block_time(self, time):
+        self._block_time = time
+
+    def get_block_time(self):
+        return self._block_time
+
+    def set_blink(self, value):
+        self._blink = value
+
+    def get_blink(self):
+        return self._blink
 
     def get_width(self):
         return self._height
@@ -99,29 +131,27 @@ font_xsmall = pygame.font.Font(None, 30)
 screen = pygame.display.get_surface()
 screen.fill(backgroundColour)
 
-blockList = []
-
 def main():
     #Booleans for passing to the draw function whether a block needs to 'blink'
-    blink_1 = False
-    blink_2 = False
-    blink_3 = False
-    blink_4 = False
-    blink_5 = False
-    blink_6 = False
-    blink_7 = False
-    blink_8 = False
-    blink_9 = False
+    # blink_1 = False
+    # blink_2 = False
+    # blink_3 = False
+    # blink_4 = False
+    # blink_5 = False
+    # blink_6 = False
+    # blink_7 = False
+    # blink_8 = False
+    # blink_9 = False
     on_spot = False
-    on_spot_1 = False
-    on_spot_2 = False
-    on_spot_3 = False
-    on_spot_4 = False
-    on_spot_5 = False
-    on_spot_6 = False
-    on_spot_7 = False
-    on_spot_8 = False
-    on_spot_9 = False
+    # on_spot_1 = False
+    # on_spot_2 = False
+    # on_spot_3 = False
+    # on_spot_4 = False
+    # on_spot_5 = False
+    # on_spot_6 = False
+    # on_spot_7 = False
+    # on_spot_8 = False
+    # on_spot_9 = False
     a_range = range(5, (screenSize[0] - 80), 80)    #sets the range for the coordinates; always 5 pixels from edge of screen and 5 pixels between blocks.
     b_range = range(5, (screenSize[1] - 80), 40)    #sets the range for the coordinates; always 5 pixels from edge of screen and 5 pixels between blocks.
     blocks = range(1,10)
@@ -129,6 +159,8 @@ def main():
     sequence_length = 2                     #the minimum sequence length is set to two.
     trial_number = 0
     GameState = "welcome"
+
+    blockList = []
 
 
     while True:
@@ -139,6 +171,7 @@ def main():
         #ITC
         for event in pygame.event.get():
             if GameState == "welcome":          #When state is "welcome" the welcome screen is shown.
+                blockList = generateBlockPositions()
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     GameState = "explanation"
                     
@@ -147,50 +180,41 @@ def main():
                     GameState = "draw_stimulus"
     
             elif GameState == "wait_for_response":
-                if (blockList[0].get_x()+ blockList[0].get_width() > mouse[0] > blockList[0].get_x() and blockList[0].get_y()+blockList[0].get_height() > mouse[1] > blockList[0].get_y()): #is the mousecursor 'over' the rect area?
+                if (blockList[0].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_1 = True
-                        time_on_1 = time() 
+                        blockList[0].click()
                         UserInput.append(1)  #appends the number for this block to the empty response list so it can be compared with the trial list.
-                elif (blockList[1].get_x() + blockList[1].get_width() > mouse[0] > blockList[1].get_x() and blockList[1].get_y() + blockList[1].get_width() > mouse[1] > blockList[1].get_y()):
+                elif (blockList[1].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_2 = True
-                        time_on_2 = time() 
+                        blockList[1].click()
                         UserInput.append(2)
-                elif (blockList[2].get_x() + blockList[2].get_width() > mouse[0] > blockList[2].get_x() and blockList[2].get_y() + blockList[2].get_width() > mouse[1] > blockList[2].get_y()):
+                elif (blockList[2].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_3 = True
-                        time_on_3 = time() 
+                        blockList[2].click()
                         UserInput.append(3)
-                elif (blockList[3].get_x() + blockList[3].get_width() > mouse[0] > blockList[3].get_x() and blockList[3].get_y() + blockList[3].get_width() > mouse[1] > blockList[3].get_y()):
+                elif (blockList[3].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_4 = True
-                        time_on_4 = time() 
+                        blockList[3].click()
                         UserInput.append(4)
-                elif (blockList[4].get_x() + blockList[4].get_width() > mouse[0] > blockList[4].get_x() and blockList[4].get_y() + blockList[4].get_width() > mouse[1] > blockList[4].get_y()):
+                elif (blockList[4].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_5 = True
-                        time_on_5 = time()
+                        blockList[4].click()
                         UserInput.append(5)
-                elif (blockList[5].get_x() + blockList[5].get_width() > mouse[0] > blockList[5].get_x() and blockList[5].get_y() + blockList[5].get_width() > mouse[1] > blockList[5].get_y()):
+                elif (blockList[5].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_6 = True
-                        time_on_6 = time() 
+                        blockList[5].click()
                         UserInput.append(6)
-                elif (blockList[6].get_x() + blockList[6].get_width() > mouse[0] > blockList[6].get_x() and blockList[6].get_y() + blockList[6].get_width() > mouse[1] > blockList[6].get_y()):
+                elif (blockList[6].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_7 = True
-                        time_on_7 = time() 
+                        blockList[6].click()
                         UserInput.append(7)
-                elif (blockList[7].get_x() + blockList[7].get_width() > mouse[0] > blockList[7].get_x() and blockList[7].get_y() + blockList[7].get_width() > mouse[1] > blockList[7].get_y()):
+                elif (blockList[7].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_8 = True
-                        time_on_8 = time() 
+                        blockList[7].click()
                         UserInput.append(8)
-                elif (blockList[8].get_x() + blockList[8].get_width() > mouse[0] > blockList[8].get_x() and blockList[8].get_y() + blockList[8].get_width() > mouse[1] > blockList[8].get_y()):
+                elif (blockList[8].is_cursor_over(mouse)):
                     if event.type == MOUSEBUTTONUP:
-                        on_spot_9 = True
-                        time_on_9 = time() 
+                        blockList[8].click()
                         UserInput.append(9)
                 if event.type ==  KEYDOWN and event.key == K_SPACE:
                     this_correctness = (CorrectBlocks == UserInput)
@@ -215,7 +239,7 @@ def main():
         
         #ATC
         if GameState == "draw_stimulus":      #The nine blocks positions are generated.
-            blockList = generateBlockPositions()
+            #blockList = generateBlockPositions()
             blockGeneration(sequence_length, blocks)
             time_ready = time()
             GameState = "ready"
@@ -227,133 +251,133 @@ def main():
         
         elif GameState == "show_blocks":        #The nine blocks are shown on screen.
             if time() - time_show_blocks > 0.5:
-                time_block_1 = time()
+                blockList[0].set_block_time(time())
                 GameState = "block_1"
                 
         elif GameState == "block_1":
             if 1 in CorrectBlocks:
-                blink_1 = True
-                if time() - time_block_1 > 1:
-                    blink_1 = False
+                blockList[0].set_blink(True)
+                if time() - blockList[0].get_block_time() > 1:
+                    blockList[0].set_blink(False)
                     GameState = "block_2"
-                    time_block_2 = time()
+                    blockList[1].set_block_time(time())
             else:
                 if time() - time_show_blocks > 0.01:
-                    time_block_2 = time()
+                    blockList[1].set_block_time(time())
                     GameState = "block_2"
         
         elif GameState == "block_2":
             if 2 in CorrectBlocks:
-                blink_2 = True
-                if time() - time_block_2 > 1:
-                    blink_2 = False
-                    time_block_3 = time()
+                blockList[1].set_blink(True)
+                if time() - blockList[1].get_block_time() > 1:
+                    blockList[1].set_blink(False)
+                    blockList[2].set_block_time(time())
                     GameState = "block_3"
             else:
-                if time() - time_block_2 > 0.01:
-                    time_block_3 = time()
+                if time() - blockList[1].get_block_time() > 0.01:
+                    blockList[2].set_block_time(time())
                     GameState = "block_3"
         
         elif GameState == "block_3":
             if 3 in CorrectBlocks:
-                blink_3 = True
-                if time() - time_block_3 > 1:
-                    blink_3 = False
-                    time_block_4 = time()
+                blockList[2].set_blink(True)
+                if time() - blockList[2].get_block_time() > 1:
+                    blockList[2].set_blink(False)
+                    blockList[3].set_block_time(time())
                     GameState = "block_4"
             else:
-                if time() - time_block_3 > 0.01:
-                    time_block_4 = time()
+                if time() - blockList[2].get_block_time() > 0.01:
+                    blockList[3].set_block_time(time())
                     GameState = "block_4"
         
         elif GameState == "block_4":
             if 4 in CorrectBlocks:
-                blink_4 = True
-                if time() - time_block_4 > 1:
-                    blink_4 = False
-                    time_block_5 = time()
+                blockList[3].set_blink(True)
+                if time() - blockList[3].get_block_time() > 1:
+                    blockList[3].set_blink(False)
+                    blockList[4].set_block_time(time())
                     GameState = "block_5"
             else:
-                if time() - time_block_4 > 0.01:
-                    time_block_5 = time()
+                if time() - blockList[3].get_block_time() > 0.01:
+                    blockList[4].set_block_time(time())
                     GameState = "block_5"
         
         elif GameState == "block_5":
             if 5 in CorrectBlocks:
-                blink_5 = True
-                if time() - time_block_5 > 1:
-                    blink_5 = False
+                blockList[4].set_blink(True)
+                if time() - blockList[4].get_block_time() > 1:
+                    blockList[4].set_blink(False)
+                    blockList[5].set_block_time(time())
                     GameState = "block_6"
-                    time_block_6 = time()
             else:
-                if time() - time_block_5 > 0.01:
-                    time_block_6 = time()
+                if time() - blockList[4].get_block_time() > 0.01:
+                    blockList[5].set_block_time(time())
                     GameState = "block_6"
         
         elif GameState == "block_6":
             if 6 in CorrectBlocks:
-                blink_6 = True
-                if time() - time_block_6 > 1:
-                    blink_6 = False
-                    time_block_7 = time()
+                blockList[5].set_blink(True)
+                if time() - blockList[5].get_block_time() > 1:
+                    blockList[5].set_blink(False)
+                    blockList[6].set_block_time(time())
                     GameState = "block_7"
             else:
-                if time() - time_block_6 > 0.01:
-                    time_block_7 = time()
+                if time() - blockList[5].get_block_time() > 0.01:
+                    blockList[6].set_block_time(time())
                     GameState = "block_7"
         
         elif GameState == "block_7":
             if 7 in CorrectBlocks:
-                blink_7 = True
-                if time() - time_block_7 > 1:
-                    blink_7 = False
-                    time_block_8 = time()
+                blockList[6].set_blink(True)
+                if time() - blockList[6].get_block_time() > 1:
+                    blockList[6].set_blink(False)
+                    blockList[7].set_block_time(time())
                     GameState = "block_8"
             else:
-                if time() - time_block_7 > 0.01:
-                    time_block_8 = time()
+                if time() - blockList[6].get_block_time() > 0.01:
+                    blockList[7].set_block_time(time())
                     GameState = "block_8"
         
         elif GameState == "block_8":
             if 8 in CorrectBlocks:
-                blink_8 = True
-                if time() - time_block_8 > 1:
-                    blink_8 = False
-                    time_block_9 = time()
+                blockList[7].set_blink(True)
+                if time() - blockList[7].get_block_time() > 1:
+                    blockList[7].set_blink(False)
+                    blockList[8].set_block_time(time())
                     GameState = "block_9"
             else:
-                if time() - time_block_8 > 0.01:
-                    time_block_9 = time()
+                if time() - blockList[7].get_block_time() > 0.01:
+                    blockList[8].set_block_time(time())
                     GameState = "block_9"
         
         elif GameState == "block_9":
             if 9 in CorrectBlocks:
-                blink_9 = True
-                if time() - time_block_9 > 1:
-                    blink_9 = False
+                blockList[8].set_blink(True)
+                if time() - blockList[8].get_block_time() > 1:
+                    blockList[8].set_blink(False)
                     GameState = "wait_for_response"
             else:
-                if time() - time_block_9 > 0.01:
+                if time() - blockList[8].get_block_time() > 0.01:
                     GameState = "wait_for_response"
-        #Unclicking of the blocks after 0.2 seconds
-        elif on_spot_1 and time()- time_on_1 > 0.2:
-                on_spot_1 = False
-        elif on_spot_2 and time()- time_on_2 > 0.2:
-                on_spot_2 = False
-        elif on_spot_3 and time()- time_on_3 > 0.2:
-                on_spot_3 = False
-        elif on_spot_4 and time()- time_on_4 > 0.2:
-                on_spot_4 = False
-        elif on_spot_5 and time()- time_on_5 > 0.2:
-                on_spot_5 = False
-        elif on_spot_6 and time()- time_on_6 > 0.2:
-                on_spot_6 = False
-        elif on_spot_7 and time()- time_on_7 > 0.2:
-                on_spot_7 = False
-        elif on_spot_8 and time()- time_on_8 > 0.2:
-                on_spot_8 = False
-        elif on_spot_9 and time()- time_on_9 > 0.2:
-                on_spot_9 = False
+        #Unclicking of the blocks after 0.2 seconds (changed to 3)
+        elif blockList[0].is_clicked() and time()- blockList[0].get_block_time() > 3:
+                blockList[0].unclick()
+        elif blockList[1].is_clicked() and time()- blockList[1].get_block_time() > 3:
+                blockList[1].unclick()
+        elif blockList[2].is_clicked() and time()- blockList[2].get_block_time() > 3:
+                blockList[2].unclick()
+        elif blockList[3].is_clicked() and time()- blockList[3].get_block_time() > 3:
+                blockList[3].unclick()
+        elif blockList[4].is_clicked() and time()- blockList[4].get_block_time() > 3:
+                 blockList[4].unclick()
+        elif blockList[5].is_clicked() and time()- blockList[5].get_block_time() > 3:
+                blockList[5].unclick()
+        elif blockList[6].is_clicked() and time()- blockList[6].get_block_time() > 3:
+                blockList[6].unclick()
+        elif blockList[7].is_clicked() and time()- blockList[7].get_block_time() > 3:
+                blockList[7].unclick()
+        elif blockList[8].is_clicked() and time()- blockList[8].get_block_time() > 3:
+                blockList[8].unclick()
                 
         elif GameState == "feedback":
             draw_feedback(this_correctness)
@@ -398,37 +422,37 @@ def main():
         
         if GameState == "show_blocks":
         
-           drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[0].get_width(), blockList[0].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+           drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
              
         if GameState == "block_1":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[0].get_width(), blockList[0].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
         
         if GameState == "block_2":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[1].get_width(), blockList[0].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[1].get_width(), blockList[0].get_height())
         
         if GameState == "block_3":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[2].get_width(), blockList[1].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[2].get_width(), blockList[1].get_height())
         
         if GameState == "block_4":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[3].get_width(), blockList[2].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[3].get_width(), blockList[2].get_height())
             
         if GameState == "block_5":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[4].get_width(), blockList[3].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[4].get_width(), blockList[3].get_height())
         
         if GameState == "block_6":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[5].get_width(), blockList[4].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[5].get_width(), blockList[4].get_height())
         
         if GameState == "block_7":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[6].get_width(), blockList[5].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[6].get_width(), blockList[5].get_height())
         
         if GameState == "block_8":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[7].get_width(), blockList[6].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[7].get_width(), blockList[6].get_height())
         
         if GameState == "block_9":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[8].get_width(), blockList[7].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[8].get_width(), blockList[7].get_height())
         
         if GameState == "wait_for_response":
-            drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, blockList[0].get_width(), blockList[8].get_height(), on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9)
+            drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
             draw_next()
             
         if GameState == "stop":
@@ -527,7 +551,7 @@ def blockGeneration(sequence_length, blocks):
         CorrectBlocks.sort() #block numbers in ascending order so they all execute during the states
         x += 1
     
-def drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, blink_8, blink_9, blockList, block_w, block_h, on_spot_1, on_spot_2, on_spot_3, on_spot_4, on_spot_5, on_spot_6, on_spot_7, on_spot_8, on_spot_9):
+def drawButtons(blockList, block_w, block_h):
    
     color_1 = col_green_dim
     color_2 = col_green_dim
@@ -539,42 +563,42 @@ def drawButtons(blink_1, blink_2, blink_3, blink_4, blink_5, blink_6, blink_7, b
     color_8 = col_green_dim
     color_9 = col_green_dim
     
-    if blink_1:
+    if blockList[0].get_blink():
         color_1 = col_green
-    elif blink_2:
+    elif blockList[1].get_blink():
         color_2 = col_green
-    elif blink_3:
+    elif blockList[2].get_blink():
         color_3 = col_green
-    elif blink_4:
+    elif blockList[3].get_blink():
         color_4 = col_green
-    elif blink_5:
+    elif blockList[4].get_blink():
         color_5 = col_green
-    elif blink_6:
+    elif blockList[5].get_blink():
         color_6 = col_green
-    elif blink_7:
+    elif blockList[6].get_blink():
         color_7 = col_green
-    elif blink_8:
+    elif blockList[7].get_blink():
         color_8 = col_green
-    elif blink_9:
+    elif blockList[8].get_blink():
         color_9 = col_green
         
-    if on_spot_1:
+    if blockList[0].is_clicked():
         color_1 = col_green
-    elif on_spot_2:
+    elif blockList[1].is_clicked():
         color_2 = col_green
-    elif on_spot_3:
+    elif blockList[2].is_clicked():
         color_3 = col_green
-    elif on_spot_4:
+    elif blockList[3].is_clicked():
         color_4 = col_green
-    elif on_spot_5:
+    elif blockList[4].is_clicked():
         color_5 = col_green
-    elif on_spot_6:
+    elif blockList[5].is_clicked():
         color_6 = col_green
-    elif on_spot_7:
+    elif blockList[6].is_clicked():
         color_7 = col_green
-    elif on_spot_8:
+    elif blockList[7].is_clicked():
         color_8 = col_green
-    elif on_spot_9:
+    elif blockList[8].is_clicked():
         color_9 = col_green
 
 
