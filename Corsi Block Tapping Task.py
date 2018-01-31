@@ -75,6 +75,9 @@ class Block:
     def is_clicked(self):
         return self._clicked
 
+    def get_block_nr(self):
+        return self._block_nr
+
     def get_click_time(self):
         return self._click_time
 
@@ -167,51 +170,14 @@ def main():
                     GameState = "draw_stimulus"
     
             elif GameState == "wait_for_response":
-                if (blockList[0].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[0].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(1)  #appends the number for this block to the empty response list so it can be compared with the trial list.
-                elif (blockList[1].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[1].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(2)
-                elif (blockList[2].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[2].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(3)
-                elif (blockList[3].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[3].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(4)
-                elif (blockList[4].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[4].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(5)
-                elif (blockList[5].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[5].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(6)
-                elif (blockList[6].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[6].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(7)
-                elif (blockList[7].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[7].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(8)
-                elif (blockList[8].is_cursor_over(mouse)):
-                    if event.type == MOUSEBUTTONUP:
-                        blockList[8].click()
-                        drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
-                        UserInput.append(9)
+                for block in blockList:
+                    if (block.is_cursor_over(mouse)):
+                        if event.type == MOUSEBUTTONUP:
+                            block.click()
+                            drawButtons(blockList, blockList[0].get_width(), blockList[0].get_height())
+                            UserInput.append(block.get_block_nr())  # appends the number for this block to the empty response list so it can be compared with the trial list.
+
+
                 if event.type ==  KEYDOWN and event.key == K_SPACE:
                     this_correctness = (CorrectBlocks == UserInput)
                     if this_correctness == True:
